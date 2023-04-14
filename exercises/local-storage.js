@@ -38,3 +38,55 @@
  */
 
 // Your code goes here...
+const createRedBoxes = () => {
+  if (localStorage.getItem('favorites')) {
+    const favs = localStorage.getItem('favorites').split(',');
+    favs.forEach((num) => {
+      const chosenBox = document.getElementById(num);
+      chosenBox.style.backgroundColor = 'red';
+      chosenBox.dataset.fav = 'true';
+    });
+  }
+};
+
+const setRedBox = (newNum) => {
+  if (localStorage.getItem('favorites')) {
+    const favs = localStorage.getItem('favorites').split(',');
+    if (!favs.includes(newNum)) {
+      favs.push(newNum);
+    }
+    const stringFavs = favs.join(',');
+    localStorage.setItem('favorites', stringFavs);
+  } else {
+    localStorage.setItem('favorites', newNum);
+  }
+};
+
+const deleteRedBox = (num) => {
+  if (localStorage.getItem('favorites')) {
+    const favs = localStorage.getItem('favorites').split(',');
+    const deletedIndex = favs.findIndex((val) => val === num);
+    favs.splice(deletedIndex, 1);
+    const stringFavs = favs.join(',');
+    localStorage.setItem('favorites', stringFavs);
+  }
+};
+
+const callback = (e) => {
+  const chosenBox = e.target;
+  if (+chosenBox.id) {
+    const fav = chosenBox.dataset.fav;
+    if (fav === 'true') {
+      chosenBox.style.backgroundColor = 'white';
+      chosenBox.dataset.fav = 'false';
+      deleteRedBox(chosenBox.id);
+    } else {
+      chosenBox.style.backgroundColor = 'red';
+      chosenBox.dataset.fav = 'true';
+      setRedBox(chosenBox.id);
+    }
+  }
+};
+
+createRedBoxes();
+document.querySelector('.cardsContainer').addEventListener('click', callback);
